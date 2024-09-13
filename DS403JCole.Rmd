@@ -14,5 +14,17 @@ library(jsonlite)
 data <- read_json(here("data/J. Cole.json"), simplifyVector = TRUE)
 ```
 
+```{r}
+# Selecting based on album and filtering for Born Sinner Album
+born_sinner_album <- data %>% 
+  filter(album == "Born Sinner") %>% 
+  select(album) 
+  
+
+# Selecting based on album and filter for 2014 Forest Hills Drive
+born_sinner_album <- data %>% 
+  filter(album == "2014 Forest Hills Drive") %>% 
+  select(album) 
+```
 
 
