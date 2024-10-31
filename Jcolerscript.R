@@ -43,6 +43,7 @@ library(Rmpfr)
 library(cluster)
 library(ggalt)
 library(widyr)
+library(ggplot)
 
 
 data <- read_json(here("data/J. Cole.json"), simplifyVector = TRUE)
@@ -61,6 +62,10 @@ forest_hills_drive_album <- data %>%
 
 
 
+#######
+Word Cloud 2014 Forest Hills Drive Album
+#######
+
 pal = brewer.pal(8, "Dark2") #add colors
 
 practice_wordcloud1 <- Corpus(VectorSource(forest_hills_drive_album$lyrics)) #covert datatset to corpus
@@ -72,6 +77,92 @@ wordcloud(practice_wordcloud1, max.words = 500, random.order = FALSE, colors=pal
 practice_wordcloud1 <- tm_map(practice_wordcloud1, removePunctuation)
 practice_wordcloud2 <- tm_map(practice_wordcloud1, tolower)
 practice_wordcloud3 <- tm_map(practice_wordcloud2, stripWhitespace)
-practice_wordcloud4 <- tm_map(practice_wordcloud3, removeWords, c(stopwords('english'), "fuck", "nigga", "fucked", "bitches", "faggot", "uh-huh", "niggas", "fucking", "shit", "bitch", "cole", "hoes", "dick","fuckin"))
+practice_wordcloud4 <- tm_map(practice_wordcloud3, removeWords, c(stopwords('english'), "fuck", "nigga", "fucked", "bitches", "faggot", 
+                                                                  "uh-huh", "niggas", "fucking", "shit", "bitch", "cole", 
+                                                                  "hoes", "dick","fuckin", "got", "well"))
 
 wordcloud(practice_wordcloud4, max.words=100, random.order=FALSE, colors=pal)
+
+
+#### 
+Word Cloud Born Sinner Album
+####
+
+pal = brewer.pal(8, "Dark2") #add colors
+
+practice_wordcloud1 <- Corpus(VectorSource(born_sinner$lyrics)) #covert datatset to corpus
+practice_wordcloud1
+
+wordcloud(practice_wordcloud1, max.words = 500, random.order = FALSE, colors=pal)
+
+##Adding cleaning conditions to wordcloud dataset
+practice_wordcloud1 <- tm_map(practice_wordcloud1, removePunctuation)
+practice_wordcloud2 <- tm_map(practice_wordcloud1, tolower)
+practice_wordcloud3 <- tm_map(practice_wordcloud2, stripWhitespace)
+practice_wordcloud4 <- tm_map(practice_wordcloud3, removeWords, c(stopwords('english'), "fuck", "nigga", "fucked", "bitches", "faggot", "uh-huh", "niggas", "fucking", "shit", "bitch", "cole", "hoes", "dick", "ass"))
+
+wordcloud(practice_wordcloud4, max.words=100, random.order=FALSE, colors=pal)
+
+####
+SENTIMENT ANALYSIS
+#### 
+
+
+# Born Sinner Sentiment
+born_sinner_text <- as.character(born_sinner$lyrics) #convert dataset to character format
+
+born_sinner_text
+
+nrc_lexicon <- get_sentiments("nrc") #NRC is the dictionary we are using
+nrc_lexicon
+
+bornsinner_sentiment <- get_nrc_sentiment(born_sinner_text)
+bornsinner_sentiment
+
+bornsinner_sentiment_score <- data.frame(colSums(bornsinner_sentiment[,]))
+bornsinner_sentiment_score
+
+names(bornsinner_sentiment_score) <- "Score"
+names(bornsinner_sentiment_score)
+
+bornsinner_sentiment_score <- cbind("sentiment"=rownames(bornsinner_sentiment_score),
+                                    bornsinner_sentiment_score)
+
+rownames(bornsinner_sentiment_score) <- NULL
+
+ggplot(data=bornsinner_sentiment_score, aes(x=sentiment, y=Score))+
+  geom_bar(aes(fill=sentiment), stat="identity") +
+  theme(legend.position="none")+
+  xlab("Sentiments")+
+  ylab("Scores")+
+  ggtitle("Sentiments of lyrics behind J. Cole's Born Sinner Album(2013)")
+
+
+# 2014 Forest Hills Drive
+forest_hills_drive_text <- as.character(forest_hills_drive_album$lyrics) #convert dataset to character format
+
+forest_hills_drive_text
+
+nrc_lexicon <- get_sentiments("nrc") #NRC is the dictionary we are using
+nrc_lexicon
+
+forest_hills_drive_sentiment <- get_nrc_sentiment(forest_hills_drive_text)
+forest_hills_drive_sentiment
+
+forest_hills_drive_sentiment_score <- data.frame(colSums(forest_hills_drive_sentiment[,]))
+forest_hills_drive_sentiment_score
+
+names(forest_hills_drive_sentiment_score) <- "Score"
+names(forest_hills_drive_sentiment_score)
+
+forest_hills_drive_sentiment_score <- cbind("sentiment"=rownames(forest_hills_drive_sentiment_score),
+                                            forest_hills_drive_sentiment_score)
+
+rownames(forest_hills_drive_sentiment_score) <- NULL
+
+ggplot(data=forest_hills_drive_sentiment_score, aes(x=sentiment, y=Score))+
+  geom_bar(aes(fill=sentiment), stat="identity") +
+  theme(legend.position="none")+
+  xlab("Sentiments")+
+  ylab("Scores")+
+  ggtitle("Sentiments of lyrics behind J. Cole's 2014 Forest Hills Drive Album")

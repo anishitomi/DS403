@@ -78,7 +78,7 @@ pal = brewer.pal(8, "Dark2") #add colors
 practice_wordcloud1 <- Corpus(VectorSource(born_sinner$lyrics)) #covert datatset to corpus
 practice_wordcloud1
 
-wordcloud(practice_wordcloud1, max.words = 500, random.order = FALSE, colors=pal)
+wordcloud(practice_wordcloud1, max.words = 300, random.order = FALSE, colors=pal)
 
 ##Adding cleaning conditions to wordcloud dataset
 practice_wordcloud1 <- tm_map(practice_wordcloud1, removePunctuation)
@@ -132,7 +132,7 @@ wordcloud(practice_wordcloud1, max.words = 500, random.order = FALSE, colors=pal
 practice_wordcloud1 <- tm_map(practice_wordcloud1, removePunctuation)
 practice_wordcloud2 <- tm_map(practice_wordcloud1, tolower)
 practice_wordcloud3 <- tm_map(practice_wordcloud2, stripWhitespace)
-practice_wordcloud4 <- tm_map(practice_wordcloud3, removeWords, c(stopwords('english'), "fuck", "nigga", "fucked", "bitches", "faggot", "uh-huh", "niggas", "fucking", "shit", "bitch", "cole", "hoes", "dick"))
+practice_wordcloud4 <- tm_map(practice_wordcloud3, removeWords, c(stopwords('english'), "fuck", "nigga", "fucked", "bitches", "faggot", "uh-huh", "niggas", "fucking", "shit", "bitch", "cole", "hoes", "dick","fuckin"))
 
 wordcloud(practice_wordcloud4, max.words=100, random.order=FALSE, colors=pal)
 ```
